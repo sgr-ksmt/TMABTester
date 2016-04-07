@@ -1,0 +1,35 @@
+language: objective-c
+osx_image: xcode7.3
+xcode_project: TMABTester.xcodeproj
+xcode_scheme: TMABTester
+env:
+  global:
+  - DESTINATION="platform=iOS Simulator,name=iPhone 6s"
+  - FRAMEWORK_NAME=TMABTester
+branches:
+  only:
+  - master
+  - "/^develop.*/"
+  - "/^v?[0-9\\.]+/"
+script:
+- pod lib lint
+- set -o pipefail
+- xcodebuild test -project "$TRAVIS_XCODE_PROJECT" -scheme "$TRAVIS_XCODE_SCHEME"
+  -configuration Release -sdk iphonesimulator -destination "$DESTINATION" | xcpretty
+  -c
+before_deploy:
+- carthage build --no-skip-current
+- carthage archive "$FRAMEWORK_NAME"
+deploy:
+  provider: releases
+  api_key:
+    secure: IlRiv7MgfBTCc3sIBrEuoYWilMVnaQWgrBO9RboHkuzUFXo9IC4tFjZHdPDq65/gYbomKbBEwVtiaKvlZbiW8cC08J72jUKnC3kx5GmhXL4lM1OuPcPyI/DeciBloKoQS1V5rfPVp0UM3yWG69CBadzt7MQnSUt7UnW+ALqJXfqfz5s+PmZj7IueN1ZM4eW94Z17YOzvrD631Op17MVXJa7O47Z57yogHGxHSbe/bAVMLjHw4LbWNw3q/AT7BceEfJHXDduTIQY6AROIZKB7z0Da0U+jdghR2Zw8h0EcvUVoe9aOF8pCvriwq0kOUe22xo2rZFoRo+lEvjIvg3jaqOj+XQYXmqAyVxZSqx5ZriOgJj7zZZ2UeOKyylDojtXWm14g0+5DzP3CHsU5Mc2f8DuXX4ROvdW8uTEPnvga/fluMIl8n5kGROzQBsjlyv2fihZDX17yce3OqgoY/utkI4AwjCNQzYHV7FMKYCsQEVmXQwkqdxnuvAllKYxH22MDrTXH47C6EqyLc97k3wGsUT4+g/uGAtw8tlqsB4pl+QI38wLEOB27w1ck+D3EwOJephMO8DB9JMDIUPt/hdtxcIL21r2bMxxvrmJEY6gn6QZUUwi+Gd1PA28ZShlBnm2nOoWYI15WfxzXbkMvsGOHMXmE4HU++t/QPHzHpx9VBC4=
+  file: "$FRAMEWORK_NAME.framework.zip"
+  skip_cleanup: true
+  on:
+    repo: "$TRAVIS_REPO_SLUG"
+    tags: true
+notifications:
+  email: false
+  slack:
+    secure: f/2YewzkboBG2gp9Nc+BjkTJF1z4FDXo8EhsxLfkkO1WRtZf7tx7uLCOR+TV6Tmu9jWLTz8sABDFgfTNOWg7TYT/mePhyFPG1Y4f/e+Xt2c1Q4G2j6/nma2LwjopRvIjF5RCIh3rPF3i5W2bta189YDlTQ1mA/LWB+6ydd3+AqVObTeMRkGyjNtAzjNQnImqqirR8OkpEs6Y8/T3I3fI3QSdKLyc6PouBipKNvPlRyrYfklb/JsHFVDObtpgn6dznFWWtbkGDKNrIoAzA85RBTOVY/8gM1V8cwdEoOoS8lO2ruPgQ6xaOsCDGVHYTwcsRgzdYsracchXVYtGVRSuSvkJD772qa3CWtlDUwIsoc09b8zmCmbD982zUqF6paZB7SY+onnoh6uttQkGTtf6Yt1kO+25WWtgay8U5DKRhcHvPGu6WHgwCSCMVNF7HZ7IsKrQxyO+BI7HsaRG5r8rIdcBvPtOgrcdPduWlZjNkraNqybYqzFVuj3FUR3czkpv/pHHnNRjfW8fRax712qUVqyqDJosXcsVvAit0DF46kjts1k6b3mBly/ALTIcR0ho0ZOEGvtI/B78oO4Gy+8v9wOEkYcmRx0H4CwyLF87P6i1NOUuaMXSyJT/Y6zYv6jWt8SL6W5QFBqaVrZs5rsPVV8oauBDbGBEtwo27TKvY7A=
