@@ -37,8 +37,7 @@ public struct AssociatedKeys {
 public typealias TMABTestParameters = [String: AnyObject]
 
 public extension TMABTestable where Key.RawValue == String, Pattern.RawValue == Int {
-    public typealias TMABTestHandler = Pattern -> Void
-    public typealias TMABTestWithParametersHandler = (Pattern, TMABTestParameters?) -> Void
+    public typealias TMABTestHandler = (Pattern, TMABTestParameters?) -> Void
     
     internal var pool: TMABTestPool? {
         get {
@@ -82,30 +81,12 @@ public extension TMABTestable where Key.RawValue == String, Pattern.RawValue == 
         pool?.add((key: key.rawValue, handler: handler as Any))
     }
 
-    public func addTest(key: Key, handler: TMABTestWithParametersHandler) {
-        pool?.add((key: key.rawValue, handler: handler as Any))
-    }
-
     public func addTest(key: Key, only target: Pattern, handler: TMABTestHandler) {
         addTest(key, only: [target], handler: handler)
     }
     
-    public func addTest(key: Key, only target: Pattern, handler: TMABTestWithParametersHandler) {
-        addTest(key, only: [target], handler: handler)
-    }
-    
     public func addTest(key: Key, only targets: [Pattern], handler: TMABTestHandler) {
-        let wrappedHandler: TMABTestHandler = { pattern in
-            if !targets.isEmpty && !targets.contains(pattern) {
-                return
-            }
-            handler(pattern)
-        }
-        addTest(key, handler: wrappedHandler)
-    }
-    
-    public func addTest(key: Key, only targets: [Pattern], handler: TMABTestWithParametersHandler) {
-        let wrappedHandler: TMABTestWithParametersHandler = { pattern, parameters in
+        let wrappedHandler: TMABTestHandler = { pattern, parameters in
             if !targets.isEmpty && !targets.contains(pattern) {
                 return
             }
@@ -113,7 +94,6 @@ public extension TMABTestable where Key.RawValue == String, Pattern.RawValue == 
         }
         addTest(key, handler: wrappedHandler)
     }
-
     
     public func removeTest(key: Key) {
         pool?.remove(key.rawValue)
@@ -123,8 +103,6 @@ public extension TMABTestable where Key.RawValue == String, Pattern.RawValue == 
         let _handler = pool?.fetchHandler(key.rawValue)
         switch _handler {
         case (let handler as TMABTestHandler):
-            handler(pattern)
-        case (let handler as TMABTestWithParametersHandler):
             handler(pattern, parameters)
         default:
             fatalError("Error : test is not registered. key = \(key.rawValue), pool = \(pool)")
