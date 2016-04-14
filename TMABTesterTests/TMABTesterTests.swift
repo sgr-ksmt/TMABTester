@@ -16,6 +16,9 @@ enum TestKey: String, TMABTestKey {
     case TestCase5
     case TestCase6
     case TestCase7
+    case TestCase8
+    case TestCase9
+    case TestCase10
 }
 
 enum TestPattern: Int, TMABTestPattern {
@@ -40,6 +43,10 @@ final class ABTester1: TMABTestable {
     
     var checkTiming: TMABTestCheckTiming {
         return .Once
+    }
+    
+    var additionalParameters: TMABTestParameters? {
+        return ["sample": 100]
     }
 }
 
@@ -144,6 +151,23 @@ class TMABTesterTests: XCTestCase {
             ex.fulfill()
         }
         
+        tester.addTest(.TestCase8) { _, parameters in
+            XCTAssertNil(parameters?["foo"])
+            XCTAssertNil(parameters?["bar"])
+            XCTAssertNil(parameters?["baz"])
+            XCTAssertEqual(parameters?["sample"] as? Int, 100)
+            ex.fulfill()
+        }
+
+        tester.addTest(.TestCase9) { _, parameters in
+            XCTAssertEqual(parameters?["foo"] as? Int, 1)
+            XCTAssertEqual(parameters?["bar"] as? Int, 2)
+            XCTAssertNil(parameters?["baz"])
+            XCTAssertEqual(parameters?["sample"] as? Int, 100)
+            ex.fulfill()
+        }
+
+        
         tester.execute(.TestCase1)
         waitForExpectationsWithTimeout(1000) { _ in }
         
@@ -176,6 +200,14 @@ class TMABTesterTests: XCTestCase {
 
         ex = self.expectationWithDescription(#function)
         tester.execute(.TestCase7)
+        waitForExpectationsWithTimeout(1000) { _ in }
+
+        ex = self.expectationWithDescription(#function)
+        tester.execute(.TestCase8)
+        waitForExpectationsWithTimeout(1000) { _ in }
+
+        ex = self.expectationWithDescription(#function)
+        tester.execute(.TestCase9, parameters: ["foo": 1, "bar": 2])
         waitForExpectationsWithTimeout(1000) { _ in }
 
     }
