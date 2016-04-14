@@ -119,11 +119,16 @@ public extension TMABTestable where Key.RawValue == String, Pattern.RawValue == 
         pool?.remove(key.rawValue)
     }
     
-    public func execute(key: Key) {
-        guard let handler = pool?.fetchHandler(key.rawValue) as? TMABTestHandler else {
+    public func execute(key: Key, parameters: TMABTestParameters? = nil) {
+        let _handler = pool?.fetchHandler(key.rawValue)
+        switch _handler {
+        case (let handler as TMABTestHandler):
+            handler(pattern)
+        case (let handler as TMABTestWithParametersHandler):
+            handler(pattern, parameters)
+        default:
             fatalError("Error : test is not registered. key = \(key.rawValue), pool = \(pool)")
         }
-        handler(pattern)
     }
     
     private var hasPattern: Bool {
