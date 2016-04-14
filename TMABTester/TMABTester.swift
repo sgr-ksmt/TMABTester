@@ -34,8 +34,11 @@ public struct AssociatedKeys {
     static var TestPoolKey = "TestPool"
 }
 
+public typealias TMABTestParameters = [String: AnyObject]
+
 public extension TMABTestable where Key.RawValue == String, Pattern.RawValue == Int {
     public typealias TMABTestHandler = Pattern -> Void
+    public typealias TMABTestWithParametersHandler = (Pattern, TMABTestParameters?) -> Void
     
     internal var pool: TMABTestPool? {
         get {
