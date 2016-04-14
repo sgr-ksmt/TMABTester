@@ -15,11 +15,14 @@ class ViewController: UIViewController {
     private lazy var tester = SampleABTester()
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        tester.addTest(.ChangeLabel) { [weak self] pattern in
-            self?.label.text = "Pattern is \(pattern)"
+        tester.resetPattern()
+        tester.addTest(.ChangeLabel) { [weak self] pattern, parameters in
+            let type = parameters?["type"] as? String
+            let num = parameters?["num"] as? Int
+            let text = "Pattern is \(pattern)" + (type.map { "_\($0)" } ?? "") + (num.map { "_\($0)" } ?? "")
+            self?.label.text = text
         }
-        tester.execute(.ChangeLabel)
+        tester.execute(.ChangeLabel, parameters: ["num": 100])
         // Do any additional setup after loading the view, typically from a nib.
     }
 
