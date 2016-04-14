@@ -81,8 +81,16 @@ public extension TMABTestable where Key.RawValue == String, Pattern.RawValue == 
     public func addTest(key: Key, handler: TMABTestHandler) {
         pool?.add((key: key.rawValue, handler: handler as Any))
     }
-    
+
+    public func addTest(key: Key, handler: TMABTestWithParametersHandler) {
+        pool?.add((key: key.rawValue, handler: handler as Any))
+    }
+
     public func addTest(key: Key, only target: Pattern, handler: TMABTestHandler) {
+        addTest(key, only: [target], handler: handler)
+    }
+    
+    public func addTest(key: Key, only target: Pattern, handler: TMABTestWithParametersHandler) {
         addTest(key, only: [target], handler: handler)
     }
     
@@ -95,6 +103,17 @@ public extension TMABTestable where Key.RawValue == String, Pattern.RawValue == 
         }
         addTest(key, handler: wrappedHandler)
     }
+    
+    public func addTest(key: Key, only targets: [Pattern], handler: TMABTestWithParametersHandler) {
+        let wrappedHandler: TMABTestWithParametersHandler = { pattern, parameters in
+            if !targets.isEmpty && !targets.contains(pattern) {
+                return
+            }
+            handler(pattern, parameters)
+        }
+        addTest(key, handler: wrappedHandler)
+    }
+
     
     public func removeTest(key: Key) {
         pool?.remove(key.rawValue)
