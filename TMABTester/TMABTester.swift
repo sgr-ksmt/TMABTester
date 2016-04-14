@@ -28,6 +28,7 @@ public protocol TMABTestable: class {
     func decidePattern() -> Pattern
     var patternSaveKey: String { get }
     var checkTiming: TMABTestCheckTiming { get }
+    var additionalParameters: TMABTestParameters? { get }
 }
 
 public struct AssociatedKeys {
@@ -60,6 +61,10 @@ public extension TMABTestable where Key.RawValue == String, Pattern.RawValue == 
             save(pattern)
             return pattern
         }
+    }
+    
+    public var additionalParameters: TMABTestParameters? {
+        return nil
     }
     
     public func install() {
@@ -99,10 +104,24 @@ public extension TMABTestable where Key.RawValue == String, Pattern.RawValue == 
         pool?.remove(key.rawValue)
     }
     
-    public func execute(key: Key, parameters: TMABTestParameters? = nil) {
+    public func execute(key: Key, parameters params: TMABTestParameters? = nil) {
         let _handler = pool?.fetchHandler(key.rawValue)
         switch _handler {
         case (let handler as TMABTestHandler):
+            var parameters: TMABTestParameters?
+            
+            switch (params, additionalParameters) {
+            case (.Some(let p), .Some(let ap)):
+                var _parameters = p
+                ap.forEach { _parameters[$0.0] = $0.1}
+                parameters = _parameters
+            case (.Some(let p), .None):
+                parameters = p
+            case (.None, .Some(let ap)):
+                parameters = ap
+            default:
+                ()
+            }
             handler(pattern, parameters)
         default:
             fatalError("Error : test is not registered. key = \(key.rawValue), pool = \(pool)")
