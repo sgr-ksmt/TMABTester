@@ -13,6 +13,12 @@ enum TestKey: String, TMABTestKey {
     case TestCase2
     case TestCase3
     case TestCase4
+    case TestCase5
+    case TestCase6
+    case TestCase7
+    case TestCase8
+    case TestCase9
+    case TestCase10
 }
 
 enum TestPattern: Int, TMABTestPattern {
@@ -37,6 +43,10 @@ final class ABTester1: TMABTestable {
     
     var checkTiming: TMABTestCheckTiming {
         return .Once
+    }
+    
+    var additionalParameters: TMABTestParameters? {
+        return ["sample": 100]
     }
 }
 
@@ -99,24 +109,64 @@ class TMABTesterTests: XCTestCase {
         let tester = ABTester1()
         let tmpPattern = tester.pattern
         
-        tester.addTest(.TestCase1) { pattern in
+        tester.addTest(.TestCase1) { pattern, _ in
             XCTAssertEqual(pattern, tmpPattern)
             ex.fulfill()
         }
-        tester.addTest(.TestCase2, only: tmpPattern) { pattern in
+        tester.addTest(.TestCase2, only: tmpPattern) { pattern, _ in
             XCTAssertEqual(pattern, tmpPattern)
             ex.fulfill()
         }
         
-        tester.addTest(.TestCase3, only: [tmpPattern]) { pattern in
+        tester.addTest(.TestCase3, only: [tmpPattern]) { pattern, _ in
             XCTAssertEqual(pattern, tmpPattern)
             ex.fulfill()
         }
 
         let patterns: [TestPattern] = [.A, .B, .C, .D]
-        tester.addTest(.TestCase4, only: patterns.filter { $0 != tmpPattern }) { pattern in
+        tester.addTest(.TestCase4, only: patterns.filter { $0 != tmpPattern }) { pattern, _ in
             XCTFail()
         }
+        
+        tester.addTest(.TestCase5) { pattern, parameters in
+            XCTAssertEqual(pattern, tmpPattern)
+            XCTAssertEqual(parameters?["foo"] as? Int, 1)
+            XCTAssertEqual(parameters?["bar"] as? Int, 2)
+            XCTAssertNil(parameters?["baz"])
+            ex.fulfill()
+        }
+        
+        tester.addTest(.TestCase6, only: [tmpPattern]) { pattern, parameters in
+            XCTAssertEqual(pattern, tmpPattern)
+            XCTAssertEqual(parameters?["foo"] as? Int, 1)
+            XCTAssertEqual(parameters?["bar"] as? Int, 2)
+            XCTAssertNil(parameters?["baz"])
+            ex.fulfill()
+        }
+        
+        tester.addTest(.TestCase7) { _, parameters in
+            XCTAssertNil(parameters?["foo"])
+            XCTAssertNil(parameters?["bar"])
+            XCTAssertNil(parameters?["baz"])
+            ex.fulfill()
+        }
+        
+        tester.addTest(.TestCase8) { _, parameters in
+            XCTAssertNil(parameters?["foo"])
+            XCTAssertNil(parameters?["bar"])
+            XCTAssertNil(parameters?["baz"])
+            XCTAssertEqual(parameters?["sample"] as? Int, 100)
+            ex.fulfill()
+        }
+
+        tester.addTest(.TestCase9) { _, parameters in
+            XCTAssertEqual(parameters?["foo"] as? Int, 1)
+            XCTAssertEqual(parameters?["bar"] as? Int, 2)
+            XCTAssertNil(parameters?["baz"])
+            XCTAssertEqual(parameters?["sample"] as? Int, 100)
+            ex.fulfill()
+        }
+
         
         tester.execute(.TestCase1)
         waitForExpectationsWithTimeout(1000) { _ in }
@@ -135,9 +185,30 @@ class TMABTesterTests: XCTestCase {
 
         ex = self.expectationWithDescription(#function)
         tester.execute(.TestCase4)
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(5 * Double(NSEC_PER_SEC))), dispatch_get_main_queue()) { () -> Void in
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(1 * Double(NSEC_PER_SEC))), dispatch_get_main_queue()) { () -> Void in
             ex.fulfill()
         }
         waitForExpectationsWithTimeout(1000) { _ in }
+        
+        ex = self.expectationWithDescription(#function)
+        tester.execute(.TestCase5, parameters: ["foo": 1, "bar": 2])
+        waitForExpectationsWithTimeout(1000) { _ in }
+        
+        ex = self.expectationWithDescription(#function)
+        tester.execute(.TestCase6, parameters: ["foo": 1, "bar": 2])
+        waitForExpectationsWithTimeout(1000) { _ in }
+
+        ex = self.expectationWithDescription(#function)
+        tester.execute(.TestCase7)
+        waitForExpectationsWithTimeout(1000) { _ in }
+
+        ex = self.expectationWithDescription(#function)
+        tester.execute(.TestCase8)
+        waitForExpectationsWithTimeout(1000) { _ in }
+
+        ex = self.expectationWithDescription(#function)
+        tester.execute(.TestCase9, parameters: ["foo": 1, "bar": 2])
+        waitForExpectationsWithTimeout(1000) { _ in }
+
     }
 }

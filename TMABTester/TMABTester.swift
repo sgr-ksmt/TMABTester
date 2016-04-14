@@ -28,14 +28,17 @@ public protocol TMABTestable: class {
     func decidePattern() -> Pattern
     var patternSaveKey: String { get }
     var checkTiming: TMABTestCheckTiming { get }
+    var additionalParameters: TMABTestParameters? { get }
 }
 
 public struct AssociatedKeys {
     static var TestPoolKey = "TestPool"
 }
 
+public typealias TMABTestParameters = [String: AnyObject]
+
 public extension TMABTestable where Key.RawValue == String, Pattern.RawValue == Int {
-    public typealias TMABTestHandler = Pattern -> Void
+    public typealias TMABTestHandler = (Pattern, TMABTestParameters?) -> Void
     
     internal var pool: TMABTestPool? {
         get {
@@ -60,6 +63,10 @@ public extension TMABTestable where Key.RawValue == String, Pattern.RawValue == 
         }
     }
     
+    public var additionalParameters: TMABTestParameters? {
+        return nil
+    }
+    
     public func install() {
         self.pool = TMABTestPool()
         _ = pattern // for load pattern immediately
@@ -78,17 +85,17 @@ public extension TMABTestable where Key.RawValue == String, Pattern.RawValue == 
     public func addTest(key: Key, handler: TMABTestHandler) {
         pool?.add((key: key.rawValue, handler: handler as Any))
     }
-    
+
     public func addTest(key: Key, only target: Pattern, handler: TMABTestHandler) {
         addTest(key, only: [target], handler: handler)
     }
     
     public func addTest(key: Key, only targets: [Pattern], handler: TMABTestHandler) {
-        let wrappedHandler: TMABTestHandler = { pattern in
+        let wrappedHandler: TMABTestHandler = { pattern, parameters in
             if !targets.isEmpty && !targets.contains(pattern) {
                 return
             }
-            handler(pattern)
+            handler(pattern, parameters)
         }
         addTest(key, handler: wrappedHandler)
     }
@@ -97,11 +104,28 @@ public extension TMABTestable where Key.RawValue == String, Pattern.RawValue == 
         pool?.remove(key.rawValue)
     }
     
-    public func execute(key: Key) {
-        guard let handler = pool?.fetchHandler(key.rawValue) as? TMABTestHandler else {
+    public func execute(key: Key, parameters params: TMABTestParameters? = nil) {
+        let _handler = pool?.fetchHandler(key.rawValue)
+        switch _handler {
+        case (let handler as TMABTestHandler):
+            var parameters: TMABTestParameters?
+            
+            switch (params, additionalParameters) {
+            case (.Some(let p), .Some(let ap)):
+                var _parameters = p
+                ap.forEach { _parameters[$0.0] = $0.1}
+                parameters = _parameters
+            case (.Some(let p), .None):
+                parameters = p
+            case (.None, .Some(let ap)):
+                parameters = ap
+            default:
+                ()
+            }
+            handler(pattern, parameters)
+        default:
             fatalError("Error : test is not registered. key = \(key.rawValue), pool = \(pool)")
         }
-        handler(pattern)
     }
     
     private var hasPattern: Bool {

@@ -36,4 +36,8 @@ final class SampleABTester: TMABTestable {
     var checkTiming: TMABTestCheckTiming {
         return .Once
     }
+    
+    var additionalParameters: TMABTestParameters? {
+        return ["type" : "X"]
+    }
 }
