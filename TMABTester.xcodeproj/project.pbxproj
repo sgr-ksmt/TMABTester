@@ -7,11 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4D24CC661CC08D8D00D6DC2E /* Dictionary+Operators.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D24CC651CC08D8D00D6DC2E /* Dictionary+Operators.swift */; };
+		4D24CC671CC08E4000D6DC2E /* Dictionary+Operators.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D24CC651CC08D8D00D6DC2E /* Dictionary+Operators.swift */; };
 		4D36EF281CB5571700979AE2 /* TMABTestPool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D36EF271CB5571700979AE2 /* TMABTestPool.swift */; };
 		4D36EF2A1CB5575A00979AE2 /* TMABTestContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D36EF291CB5575A00979AE2 /* TMABTestContainer.swift */; };
 		4D36EF331CB5E85C00979AE2 /* TMABTesterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D36EF321CB5E85C00979AE2 /* TMABTesterTests.swift */; };
 		4D36EF351CB5E85C00979AE2 /* TMABTester.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D43A5A51CB51AED00CBE201 /* TMABTester.framework */; };
-		4D36EF3B1CB5F58400979AE2 /* TMABTester.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DB4CEC31CB51B670026684F /* TMABTester.swift */; };
+		4D36EF3B1CB5F58400979AE2 /* TMABTestable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DB4CEC31CB51B670026684F /* TMABTestable.swift */; };
 		4D36EF3C1CB5F58600979AE2 /* TMABTestPool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D36EF271CB5571700979AE2 /* TMABTestPool.swift */; };
 		4D36EF3D1CB5F58900979AE2 /* TMABTestContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D36EF291CB5575A00979AE2 /* TMABTestContainer.swift */; };
 		4D36EF451CB6070B00979AE2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D36EF441CB6070B00979AE2 /* AppDelegate.swift */; };
@@ -21,7 +23,7 @@
 		4D36EF4F1CB6070B00979AE2 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4D36EF4D1CB6070B00979AE2 /* LaunchScreen.storyboard */; };
 		4D36EF551CB6078900979AE2 /* SampleABTester.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D36EF541CB6078900979AE2 /* SampleABTester.swift */; };
 		4D43A5A91CB51AEE00CBE201 /* TMABTester.h in Headers */ = {isa = PBXBuildFile; fileRef = 4D43A5A81CB51AEE00CBE201 /* TMABTester.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		4DB4CEC41CB51B670026684F /* TMABTester.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DB4CEC31CB51B670026684F /* TMABTester.swift */; };
+		4DB4CEC41CB51B670026684F /* TMABTestable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DB4CEC31CB51B670026684F /* TMABTestable.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -35,6 +37,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		4D24CC651CC08D8D00D6DC2E /* Dictionary+Operators.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Dictionary+Operators.swift"; sourceTree = "<group>"; };
 		4D36EF271CB5571700979AE2 /* TMABTestPool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TMABTestPool.swift; sourceTree = "<group>"; };
 		4D36EF291CB5575A00979AE2 /* TMABTestContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TMABTestContainer.swift; sourceTree = "<group>"; };
 		4D36EF301CB5E85C00979AE2 /* TMABTesterTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TMABTesterTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -51,7 +54,7 @@
 		4D43A5A51CB51AED00CBE201 /* TMABTester.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = TMABTester.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4D43A5A81CB51AEE00CBE201 /* TMABTester.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TMABTester.h; sourceTree = "<group>"; };
 		4D43A5AA1CB51AEE00CBE201 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		4DB4CEC31CB51B670026684F /* TMABTester.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TMABTester.swift; sourceTree = "<group>"; };
+		4DB4CEC31CB51B670026684F /* TMABTestable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TMABTestable.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -128,9 +131,10 @@
 			children = (
 				4D43A5A81CB51AEE00CBE201 /* TMABTester.h */,
 				4D43A5AA1CB51AEE00CBE201 /* Info.plist */,
-				4DB4CEC31CB51B670026684F /* TMABTester.swift */,
+				4DB4CEC31CB51B670026684F /* TMABTestable.swift */,
 				4D36EF271CB5571700979AE2 /* TMABTestPool.swift */,
 				4D36EF291CB5575A00979AE2 /* TMABTestContainer.swift */,
+				4D24CC651CC08D8D00D6DC2E /* Dictionary+Operators.swift */,
 			);
 			path = TMABTester;
 			sourceTree = "<group>";
@@ -192,7 +196,6 @@
 				4D43A5A11CB51AED00CBE201 /* Frameworks */,
 				4D43A5A21CB51AED00CBE201 /* Headers */,
 				4D43A5A31CB51AED00CBE201 /* Resources */,
-				4D36EF2B1CB5E77500979AE2 /* SwiftLint */,
 			);
 			buildRules = (
 			);
@@ -271,23 +274,6 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
-/* Begin PBXShellScriptBuildPhase section */
-		4D36EF2B1CB5E77500979AE2 /* SwiftLint */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = SwiftLint;
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "if which swiftlint >/dev/null; then\n    swiftlint\nelse\n    echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi";
-		};
-/* End PBXShellScriptBuildPhase section */
-
 /* Begin PBXSourcesBuildPhase section */
 		4D36EF2C1CB5E85C00979AE2 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -295,7 +281,8 @@
 			files = (
 				4D36EF3C1CB5F58600979AE2 /* TMABTestPool.swift in Sources */,
 				4D36EF3D1CB5F58900979AE2 /* TMABTestContainer.swift in Sources */,
-				4D36EF3B1CB5F58400979AE2 /* TMABTester.swift in Sources */,
+				4D24CC671CC08E4000D6DC2E /* Dictionary+Operators.swift in Sources */,
+				4D36EF3B1CB5F58400979AE2 /* TMABTestable.swift in Sources */,
 				4D36EF331CB5E85C00979AE2 /* TMABTesterTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -314,7 +301,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4DB4CEC41CB51B670026684F /* TMABTester.swift in Sources */,
+				4DB4CEC41CB51B670026684F /* TMABTestable.swift in Sources */,
+				4D24CC661CC08D8D00D6DC2E /* Dictionary+Operators.swift in Sources */,
 				4D36EF281CB5571700979AE2 /* TMABTestPool.swift in Sources */,
 				4D36EF2A1CB5575A00979AE2 /* TMABTestContainer.swift in Sources */,
 			);
@@ -528,6 +516,7 @@
 				4D36EF3A1CB5E85C00979AE2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		4D36EF511CB6070B00979AE2 /* Build configuration list for PBXNativeTarget "Demo" */ = {
 			isa = XCConfigurationList;
@@ -536,6 +525,7 @@
 				4D36EF531CB6070B00979AE2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		4D43A59F1CB51AED00CBE201 /* Build configuration list for PBXProject "TMABTester" */ = {
 			isa = XCConfigurationList;

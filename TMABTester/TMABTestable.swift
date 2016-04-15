@@ -1,5 +1,5 @@
 //
-//  TMABTester.swift
+//  TMABTestable.swift
 //  TMABTester
 //
 //  Created by Suguru Kishimoto on 2016/04/06.
@@ -25,14 +25,17 @@ public protocol TMABTestable: class {
     associatedtype Key: TMABTestKey, Equatable
     associatedtype Pattern: TMABTestPattern, Equatable
     
+    // required
     func decidePattern() -> Pattern
     var patternSaveKey: String { get }
     var checkTiming: TMABTestCheckTiming { get }
+    
+    // optional
     var additionalParameters: TMABTestParameters? { get }
 }
 
-public struct AssociatedKeys {
-    static var TestPoolKey = "TestPool"
+private struct AssociatedKeys {
+    static var TestPoolKey = "FAMABTesterPool"
 }
 
 public typealias TMABTestParameters = [String: AnyObject]
@@ -58,7 +61,9 @@ public extension TMABTestable where Key.RawValue == String, Pattern.RawValue == 
             return load()
         } else {
             let pattern = decidePattern()
-            save(pattern)
+            if case .Once = checkTiming {
+                save(pattern)
+            }
             return pattern
         }
     }
@@ -91,38 +96,23 @@ public extension TMABTestable where Key.RawValue == String, Pattern.RawValue == 
     }
     
     public func addTest(key: Key, only targets: [Pattern], handler: TMABTestHandler) {
-        let wrappedHandler: TMABTestHandler = { pattern, parameters in
+        addTest(key) { pattern, parameters in
             if !targets.isEmpty && !targets.contains(pattern) {
                 return
             }
             handler(pattern, parameters)
         }
-        addTest(key, handler: wrappedHandler)
     }
     
     public func removeTest(key: Key) {
         pool?.remove(key.rawValue)
     }
     
-    public func execute(key: Key, parameters params: TMABTestParameters? = nil) {
+    public func execute(key: Key, parameters: TMABTestParameters? = nil) {
         let _handler = pool?.fetchHandler(key.rawValue)
         switch _handler {
         case (let handler as TMABTestHandler):
-            var parameters: TMABTestParameters?
-            
-            switch (params, additionalParameters) {
-            case (.Some(let p), .Some(let ap)):
-                var _parameters = p
-                ap.forEach { _parameters[$0.0] = $0.1}
-                parameters = _parameters
-            case (.Some(let p), .None):
-                parameters = p
-            case (.None, .Some(let ap)):
-                parameters = ap
-            default:
-                ()
-            }
-            handler(pattern, parameters)
+            handler(pattern, parameters + additionalParameters)
         default:
             fatalError("Error : test is not registered. key = \(key.rawValue), pool = \(pool)")
         }
