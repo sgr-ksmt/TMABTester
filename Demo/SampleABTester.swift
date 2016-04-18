@@ -13,7 +13,7 @@ enum SampleTestKey: String, TMABTestKey {
     case ChangeLabel
 }
 
-enum SampleTestPattern: Int, TMABTestPattern {
+enum SampleTestPattern: String, TMABTestPattern {
     case A, B, C, D
 }
 
@@ -26,7 +26,7 @@ final class SampleABTester: TMABTestable {
     }
     
     func decidePattern() -> Pattern {
-        return Pattern(rawValue: Int(arc4random_uniform(4)))!
+        return [Pattern.A, .B, .C, .D][Int(arc4random_uniform(4))]
     }
     
     var patternSaveKey: String {
