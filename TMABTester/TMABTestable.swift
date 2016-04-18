@@ -18,7 +18,38 @@ public protocol TMABTestKey: RawRepresentable {
 }
 
 public protocol TMABTestPattern: RawRepresentable {
-    associatedtype RawValue = Int
+    var toObjectForSave: AnyObject { get }
+    init(patternObject: AnyObject)
+}
+
+public extension TMABTestPattern where RawValue == Int {
+    init(patternObject: AnyObject) {
+        self.init(rawValue: patternObject as! Int)!
+    }
+
+    var toObjectForSave: AnyObject {
+        return rawValue as AnyObject
+    }
+}
+
+public extension TMABTestPattern where RawValue == UInt {
+    init(patternObject: AnyObject) {
+        self.init(rawValue: patternObject as! UInt)!
+    }
+
+    var toObjectForSave: AnyObject {
+        return rawValue as AnyObject
+    }
+}
+
+public extension TMABTestPattern where RawValue == String {
+    init(patternObject: AnyObject) {
+        self.init(rawValue: patternObject as! String)!
+    }
+
+    var toObjectForSave: AnyObject {
+        return rawValue as AnyObject
+    }
 }
 
 public protocol TMABTestable: class {
@@ -29,7 +60,6 @@ public protocol TMABTestable: class {
     func decidePattern() -> Pattern
     var patternSaveKey: String { get }
     var checkTiming: TMABTestCheckTiming { get }
-    
     // optional
     var additionalParameters: TMABTestParameters? { get }
 }
@@ -40,7 +70,7 @@ private struct AssociatedKeys {
 
 public typealias TMABTestParameters = [String: AnyObject]
 
-public extension TMABTestable where Key.RawValue == String, Pattern.RawValue == Int {
+public extension TMABTestable where Key.RawValue == String {
     public typealias TMABTestHandler = (Pattern, TMABTestParameters?) -> Void
     
     internal var pool: TMABTestPool? {
@@ -123,12 +153,12 @@ public extension TMABTestable where Key.RawValue == String, Pattern.RawValue == 
     }
     
     private func save(pattern: Pattern) {
-        NSUserDefaults.standardUserDefaults().setInteger(pattern.rawValue, forKey: patternSaveKey)
+        NSUserDefaults.standardUserDefaults().setObject(pattern.toObjectForSave, forKey: patternSaveKey)
         NSUserDefaults.standardUserDefaults().synchronize()
     }
     
     private func load() -> Pattern {
-        return Pattern(rawValue: NSUserDefaults.standardUserDefaults().integerForKey(patternSaveKey))!
+        return Pattern(patternObject: NSUserDefaults.standardUserDefaults().objectForKey(patternSaveKey)!)
     }
 }
 
