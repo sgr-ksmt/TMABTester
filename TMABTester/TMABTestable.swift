@@ -9,8 +9,8 @@
 import Foundation
 
 public enum TMABTestCheckTiming {
-    case Once
-    case EveryTime
+    case once
+    case everyTime
 }
 
 public protocol TMABTestKey: RawRepresentable {
@@ -82,16 +82,16 @@ public extension TMABTestable where Key.RawValue == String {
             return p
         }
         set {
-            objc_setAssociatedObject(self, &AssociatedKeys.TestPoolKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            objc_setAssociatedObject(self, &AssociatedKeys.TestPoolKey, newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
     
     public var pattern: Pattern {
-        if case .Once = checkTiming where hasPattern {
+        if case .once = checkTiming where hasPattern {
             return load()
         } else {
             let pattern = decidePattern()
-            if case .Once = checkTiming {
+            if case .once = checkTiming {
                 save(pattern)
             }
             return pattern
@@ -112,20 +112,20 @@ public extension TMABTestable where Key.RawValue == String {
     }
     
     public func resetPattern() {
-        NSUserDefaults.standardUserDefaults().removeObjectForKey(patternSaveKey)
-        NSUserDefaults.standardUserDefaults().synchronize()
+        UserDefaults.standard().removeObject(forKey: patternSaveKey)
+        UserDefaults.standard().synchronize()
         install()
     }
     
-    public func addTest(key: Key, handler: TMABTestHandler) {
+    public func addTest(_ key: Key, handler: TMABTestHandler) {
         pool?.add((key: key.rawValue, handler: handler as Any))
     }
 
-    public func addTest(key: Key, only target: Pattern, handler: TMABTestHandler) {
+    public func addTest(_ key: Key, only target: Pattern, handler: TMABTestHandler) {
         addTest(key, only: [target], handler: handler)
     }
     
-    public func addTest(key: Key, only targets: [Pattern], handler: TMABTestHandler) {
+    public func addTest(_ key: Key, only targets: [Pattern], handler: TMABTestHandler) {
         addTest(key) { pattern, parameters in
             if !targets.isEmpty && !targets.contains(pattern) {
                 return
@@ -134,11 +134,11 @@ public extension TMABTestable where Key.RawValue == String {
         }
     }
     
-    public func removeTest(key: Key) {
+    public func removeTest(_ key: Key) {
         pool?.remove(key.rawValue)
     }
     
-    public func execute(key: Key, parameters: TMABTestParameters? = nil) {
+    public func execute(_ key: Key, parameters: TMABTestParameters? = nil) {
         let _handler = pool?.fetchHandler(key.rawValue)
         switch _handler {
         case (let handler as TMABTestHandler):
@@ -149,16 +149,16 @@ public extension TMABTestable where Key.RawValue == String {
     }
     
     private var hasPattern: Bool {
-        return NSUserDefaults.standardUserDefaults().objectForKey(patternSaveKey) != nil
+        return UserDefaults.standard().object(forKey: patternSaveKey) != nil
     }
     
-    private func save(pattern: Pattern) {
-        NSUserDefaults.standardUserDefaults().setObject(pattern.toObjectForSave, forKey: patternSaveKey)
-        NSUserDefaults.standardUserDefaults().synchronize()
+    private func save(_ pattern: Pattern) {
+        UserDefaults.standard().set(pattern.toObjectForSave, forKey: patternSaveKey)
+        UserDefaults.standard().synchronize()
     }
     
     private func load() -> Pattern {
-        return Pattern(patternObject: NSUserDefaults.standardUserDefaults().objectForKey(patternSaveKey)!)
+        return Pattern(patternObject: UserDefaults.standard().object(forKey: patternSaveKey)!)
     }
 }
 
