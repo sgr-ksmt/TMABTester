@@ -9,7 +9,7 @@
 import Foundation
 
 extension Dictionary {
-    public func union(other: Dictionary) -> Dictionary {
+    public func union(_ other: Dictionary) -> Dictionary {
         var tmp = self
         other.forEach { tmp[$0.0] = $0.1 }
         return tmp
@@ -21,23 +21,23 @@ func +<K, V>(lhs: Dictionary<K, V>, rhs: Dictionary<K, V>) -> Dictionary<K, V> {
     return lhs.union(rhs)
 }
 
-func +=<K, V>(inout lhs: Dictionary<K, V>, rhs: Dictionary<K, V>) {
+func +=<K, V>(lhs: inout Dictionary<K, V>, rhs: Dictionary<K, V>) {
     lhs = lhs + rhs
 }
 
 func +<K, V>(lhs: Dictionary<K, V>?, rhs: Dictionary<K, V>?) -> Dictionary<K, V>? {
     switch (lhs, rhs) {
-    case (.Some(let l), .Some(let r)):
+    case (.some(let l), .some(let r)):
         return l + r
-    case (.Some(let l), .None):
+    case (.some(let l), .none):
         return l
-    case (.None, .Some(let r)):
+    case (.none, .some(let r)):
         return r
     default:
         return nil
     }
 }
 
-func +=<K, V>(inout lhs: Dictionary<K, V>?, rhs: Dictionary<K, V>?) {
+func +=<K, V>(lhs: inout Dictionary<K, V>?, rhs: Dictionary<K, V>?) {
     lhs = lhs + rhs
 }

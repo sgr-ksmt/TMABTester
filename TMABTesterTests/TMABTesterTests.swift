@@ -22,7 +22,7 @@ enum TestKey: String, TMABTestKey {
 }
 
 enum TestPattern: Int, TMABTestPattern {
-    case A, B, C, D
+    case a, b, c, d
 }
 
 final class ABTester1: TMABTestable {
@@ -42,7 +42,7 @@ final class ABTester1: TMABTestable {
     }
     
     var checkTiming: TMABTestCheckTiming {
-        return .Once
+        return .once
     }
     
     var additionalParameters: TMABTestParameters? {
@@ -105,7 +105,7 @@ class TMABTesterTests: XCTestCase {
     }
     
     func testExecution() {
-        var ex = self.expectationWithDescription(#function)
+        var ex = self.expectation(withDescription: #function)
         let tester = ABTester1()
         let tmpPattern = tester.pattern
         
@@ -123,7 +123,7 @@ class TMABTesterTests: XCTestCase {
             ex.fulfill()
         }
 
-        let patterns: [TestPattern] = [.A, .B, .C, .D]
+        let patterns: [TestPattern] = [.a, .b, .c, .d]
         tester.addTest(.TestCase4, only: patterns.filter { $0 != tmpPattern }) { pattern, _ in
             XCTFail()
         }
@@ -169,46 +169,46 @@ class TMABTesterTests: XCTestCase {
 
         
         tester.execute(.TestCase1)
-        waitForExpectationsWithTimeout(1000) { _ in }
+        waitForExpectations(withTimeout: 1000) { _ in }
         
-        ex = self.expectationWithDescription(#function)
+        ex = self.expectation(withDescription: #function)
         tester.execute(.TestCase1)
-        waitForExpectationsWithTimeout(1000) { _ in }
+        waitForExpectations(withTimeout: 1000) { _ in }
 
-        ex = self.expectationWithDescription(#function)
+        ex = self.expectation(withDescription: #function)
         tester.execute(.TestCase2)
-        waitForExpectationsWithTimeout(1000) { _ in }
+        waitForExpectations(withTimeout: 1000) { _ in }
 
-        ex = self.expectationWithDescription(#function)
+        ex = self.expectation(withDescription: #function)
         tester.execute(.TestCase3)
-        waitForExpectationsWithTimeout(1000) { _ in }
+        waitForExpectations(withTimeout: 1000) { _ in }
 
-        ex = self.expectationWithDescription(#function)
+        ex = self.expectation(withDescription: #function)
         tester.execute(.TestCase4)
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(1 * Double(NSEC_PER_SEC))), dispatch_get_main_queue()) { () -> Void in
+        DispatchQueue.main.after(when: DispatchTime.now() + Double(Int64(1 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)) { () -> Void in
             ex.fulfill()
         }
-        waitForExpectationsWithTimeout(1000) { _ in }
+        waitForExpectations(withTimeout: 1000) { _ in }
         
-        ex = self.expectationWithDescription(#function)
+        ex = self.expectation(withDescription: #function)
         tester.execute(.TestCase5, parameters: ["foo": 1, "bar": 2])
-        waitForExpectationsWithTimeout(1000) { _ in }
+        waitForExpectations(withTimeout: 1000) { _ in }
         
-        ex = self.expectationWithDescription(#function)
+        ex = self.expectation(withDescription: #function)
         tester.execute(.TestCase6, parameters: ["foo": 1, "bar": 2])
-        waitForExpectationsWithTimeout(1000) { _ in }
+        waitForExpectations(withTimeout: 1000) { _ in }
 
-        ex = self.expectationWithDescription(#function)
+        ex = self.expectation(withDescription: #function)
         tester.execute(.TestCase7)
-        waitForExpectationsWithTimeout(1000) { _ in }
+        waitForExpectations(withTimeout: 1000) { _ in }
 
-        ex = self.expectationWithDescription(#function)
+        ex = self.expectation(withDescription: #function)
         tester.execute(.TestCase8)
-        waitForExpectationsWithTimeout(1000) { _ in }
+        waitForExpectations(withTimeout: 1000) { _ in }
 
-        ex = self.expectationWithDescription(#function)
+        ex = self.expectation(withDescription: #function)
         tester.execute(.TestCase9, parameters: ["foo": 1, "bar": 2])
-        waitForExpectationsWithTimeout(1000) { _ in }
+        waitForExpectations(withTimeout: 1000) { _ in }
 
     }
 }

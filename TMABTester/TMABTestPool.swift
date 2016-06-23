@@ -16,18 +16,18 @@ internal final class TMABTestPool {
     
     init () {}
     
-    func add(test: (key: String, handler: Any)) {
+    func add(_ test: (key: String, handler: Any)) {
         if let _ = containers.filter({ $0.key == test.key }).first {
             fatalError("Error : This test Already added. key : \(test.key)")
         }
         containers.append(TMABTestContainer(test))
     }
     
-    func fetchHandler(key: String) -> Any? {
+    func fetchHandler(_ key: String) -> Any? {
         return containers.filter { $0.key == key }.first?.handler
     }
     
-    func remove(key: String) {
+    func remove(_ key: String) {
         containers = containers.filter { $0.key != key }
     }
     
